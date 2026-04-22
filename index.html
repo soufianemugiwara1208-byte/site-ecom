@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>O'poil.com - Accessoires pour Animaux</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- PayPal Checkout -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AYTiTe_Og2PPW3tNvpVw20BpCpGv5SHwAMTNmlUBHlvWP5C4UKDTDfVFqAtmunpLLNR1GG7eczOZvc-H&currency=EUR&intent=capture&enable-funding=venmo,card,paylater,paypal"></script>
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <style>
+        :root { --primary-color: #4CAF50; --secondary-color: #F5F5F5; --text-color: #333; --light-text: #666; --white: #FFFFFF; --border-color: #DDD; --shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
+        body { color: var(--text-color); line-height: 1.6; background-color: var(--white); }
+        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .btn { display: inline-block; background-color: var(--primary-color); color: var(--white); padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
+        .btn:hover { background-color: #45a049; }
+        .header { background-color: var(--white); box-shadow: var(--shadow); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
+        .hero { background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b') no-repeat center/cover; color: white; padding: 100px 0; text-align: center; }
+        .produits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
+        .produit-card { background: white; border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; transition: transform 0.3s; }
+        .produit-card:hover { transform: translateY(-5px); }
+        .produit-card img { width: 100%; height: 250px; object-fit: cover; }
+        .panier-article { display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); }
+        #confirmation { display: none; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo"><h1><i class="fas fa-paw"></i> O'poil.com</h1></div>
+            <nav class="nav"><ul><li><a href="#accueil">Accueil</a></li><li><a href="#boutique">Boutique</a></li></ul></nav>
+            <div class="header-icons"><a href="#panier"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a></div>
+        </div>
+    </header>
+
+    <!-- Accueil -->
+    <section id="accueil" class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h2>Accessoires pour Animaux</h2>
+                <p>Découvrez notre sélection de produits éthiques pour le bien-être de vos compagnons.</p>
+                <a href="#boutique" class="btn">Voir la boutique</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Boutique -->
+    <section id="boutique" class="section" style="padding: 60px 0;">
+        <div class="container">
+            <h2>Nos Produits</h2>
+            <div class="produits-grid" id="produits-container"></div>
+        </div>
+    </section>
+
+    <!-- Panier -->
+    <section id="panier" class="section" style="padding: 60px 0;">
+        <div class="container">
+            <h2>Votre Panier</h2>
+            <div class="panier-contenu" id="panier-contenu"><p id="panier-vide">Votre panier est vide.</p></div>
+            <div class="panier-total">
+                <h2>Total : <span id="panier-total">0,00 €</span></h2>
+                <div id="paypal-button-container"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Confirmation -->
+    <section id="confirmation" class="section">
+        <div class="container" style="text-align: center;">
+            <i class="fas fa-check-circle" style="font-size: 3rem; color: #4CAF50; margin-bottom: 20px;"></i>
+            <h2>Merci pour votre commande !</h2>
+            <div id="confirmation-details" style="margin: 20px 0;"></div>
+            <a href="#boutique" class="btn" style="margin-top: 20px;">Retour à la boutique</a>
+        </div>
+    </section>
+
+    <script>
+        // Produits avec photos et prix corrigés
+        const produits = [
+            {
+                id: "brosse-chat",
+                nom: "Brosse pour Chat",
+                prix: 24.99,
+                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/e94aa2ba-da57-48ea-bdab-9e9da3694777",
+                description: "Brosse douce pour éliminer les poils morts de votre chat."
+            },
+            {
+                id: "lit-chat",
+                nom: "Lit pour Chat",
+                prix: 19.99,
+                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/ba6aabfb-3ee6-46ce-88db-57439c928b7e",
+                description: "Lit confortable pour chat avec design moderne."
+            },
+            {
+                id: "fontaine-chat",
+                nom: "Fontaine à Eau pour Chat",
+                prix: 27.99,
+                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/9d58e432-246f-4c50-b6d7-8b7302e06567",
+                description: "Fontaine à eau automatique pour garder votre chat hydraté."
+            },
+            {
+                id: "jouet-chanvre",
+                nom: "Jouet en Chanvre pour Chien",
+                prix: 12.00,
+                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/05117f81-5abe-4845-9cc3-570a261cb7b6",
+                description: "Jouet écologique en chanvre pour chien, résistant et biodégradable."
+            }
+        ];
+
+        // Panier
+        let panier = JSON.parse(localStorage.getItem('panier')) || [];
+
+        // Fonctions du panier
+        function sauvegarderPanier() {
+            localStorage.setItem('panier', JSON.stringify(panier));
+            document.getElementById('cart-count').textContent = panier.reduce((total, item) => total + item.quantite, 0);
+            afficherPanier();
+        }
+
+        function ajouterAuPanier(idProduit) {
+            const produit = produits.find(p => p.id === idProduit);
+            const existe = panier.find(item => item.id === idProduit);
+            if (existe) existe.quantite += 1;
+            else panier.push({...produit, quantite: 1});
+            sauvegarderPanier();
+            alert(`${produit.nom} ajouté au panier !`);
+        }
+
+        function afficherProduits() {
+            const container = document.getElementById('produits-container');
+            container.innerHTML = produits.map(produit => `
+                <div class="produit-card">
+                    <img src="${produit.image}" alt="${produit.nom}">
+                    <h3>${produit.nom}</h3>
+                    <p>${produit.prix.toFixed(2)} €</p>
+                    <p><small>${produit.description}</small></p>
+                    <button class="btn" onclick="ajouterAuPanier('${produit.id}')">Ajouter au panier</button>
+                </div>
+            `).join('');
+        }
+
+        function afficherPanier() {
+            const container = document.getElementById('panier-contenu');
+            const totalElement = document.getElementById('panier-total');
+            const videElement = document.getElementById('panier-vide');
+            const paypalContainer = document.getElementById('paypal-button-container');
+
+            if (panier.length === 0) {
+                container.innerHTML = '';
+                videElement.style.display = 'block';
+                totalElement.textContent = '0,00 €';
+                paypalContainer.innerHTML = '';
+                return;
+            }
+
+            videElement.style.display = 'none';
+            container.innerHTML = panier.map(item => `
+                <div class="panier-article">
+                    <img src="${item.image}" alt="${item.nom}" style="width: 80px; height: 80px; object-fit: cover;">
+                    <h3>${item.nom}</h3>
+                    <p>${item.prix.toFixed(2)} €</p>
+                    <div>
+                        <button onclick="changerQuantite('${item.id}', -1)">-</button>
+                        <span>${item.quantite}</span>
+                        <button onclick="changerQuantite('${item.id}', 1)">+</button>
+                    </div>
+                    <button onclick="supprimerDuPanier('${item.id}')">❌</button>
+                </div>
+            `).join('');
+
+            const total = panier.reduce((sum, item) => sum + (item.prix * item.quantite), 0).toFixed(2);
+            totalElement.textContent = `${total} €`;
+
+            if (total > 0) {
+                paypal.Buttons({
+                    createOrder: (data, actions) => actions.order.create({
+                        purchase_units: [{ amount: { value: total }, description: "Commande O'poil.com" }]
+                    }),
+                    onApprove: (data, actions) => actions.order.capture().then(details => {
+                        // Envoi email via EmailJS
+                        emailjs.send("service_yojc9b9", "template_btlq6g2", {
+                            client_name: details.payer.name.given_name,
+                            client_email: details.payer.email_address,
+                            produits: panier.map(p => `${p.nom} (x${p.quantite})`).join(', '),
+                            total: total + " €",
+                            order_id: details.id
+                        }).then(() => {
+                            document.getElementById('panier').style.display = 'none';
+                            document.getElementById('confirmation').style.display = 'block';
+                            document.getElementById('confirmation-details').innerHTML = `
+                                <p>Commande #${details.id} validée !</p>
+                                <p>Total: ${total} €</p>
+                                <p>Merci pour votre achat.</p>
+                            `;
+                            panier = [];
+                            sauvegarderPanier();
+                        });
+                    })
+                }).render(paypalContainer);
+            }
+        }
+
+        function changerQuantite(idProduit, delta) {
+            const item = panier.find(i => i.id === idProduit);
+            if (item) {
+                item.quantite = Math.max(1, item.quantite + delta);
+                sauvegarderPanier();
+            }
+        }
+
+        function supprimerDuPanier(idProduit) {
+            panier = panier.filter(item => item.id !== idProduit);
+            sauvegarderPanier();
+        }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', () => {
+            afficherProduits();
+            afficherPanier();
+            emailjs.init("BQQsWdtvIoWIOVmg6");
+        });
+    </script>
+</body>
+</html>
