@@ -13,29 +13,342 @@
     <!-- EmailJS -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
     <style>
-        :root { --primary-color: #4CAF50; --secondary-color: #F5F5F5; --text-color: #333; --light-text: #666; --white: #FFFFFF; --border-color: #DDD; --shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
-        body { color: var(--text-color); line-height: 1.6; background-color: var(--white); }
-        .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .btn { display: inline-block; background-color: var(--primary-color); color: var(--white); padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .btn:hover { background-color: #45a049; }
-        .header { background-color: var(--white); box-shadow: var(--shadow); padding: 15px 0; position: sticky; top: 0; z-index: 100; }
-        .hero { background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b') no-repeat center/cover; color: white; padding: 100px 0; text-align: center; }
-        .produits-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px; }
-        .produit-card { background: white; border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; transition: transform 0.3s; }
-        .produit-card:hover { transform: translateY(-5px); }
-        .produit-card img { width: 100%; height: 250px; object-fit: cover; }
-        .panier-article { display: grid; grid-template-columns: auto 1fr auto auto; gap: 20px; align-items: center; padding: 20px 0; border-bottom: 1px solid var(--border-color); }
-        #confirmation { display: none; }
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #F5F5F5;
+            --text-color: #333;
+            --light-text: #666;
+            --white: #FFFFFF;
+            --border-color: #DDD;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: var(--white);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #45a049;
+        }
+
+        .header {
+            background-color: var(--white);
+            box-shadow: var(--shadow);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav ul {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav a {
+            color: var(--text-color);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .header-icons a {
+            color: var(--text-color);
+            font-size: 1.2rem;
+            position: relative;
+        }
+
+        .header-icons #cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+        }
+
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('https://images.unsplash.com/photo-1548199973-03cce0bbc87b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            color: var(--white);
+            padding: 100px 0;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .section {
+            padding: 60px 0;
+        }
+
+        .section h2 {
+            text-align: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            color: var(--primary-color);
+        }
+
+        .produits-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .produit-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .produit-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .produit-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .produit-card h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            padding: 15px 20px 0;
+        }
+
+        .produit-card .prix {
+            font-weight: 600;
+            color: var(--primary-color);
+            padding: 0 20px 15px;
+            font-size: 1.3rem;
+        }
+
+        .produit-card .description {
+            padding: 0 20px 20px;
+            font-size: 0.9em;
+            color: var(--light-text);
+            line-height: 1.5;
+        }
+
+        .produit-card .btn {
+            display: block;
+            margin: 0 20px 20px;
+            width: calc(100% - 40px);
+        }
+
+        .panier-contenu {
+            margin-bottom: 40px;
+        }
+
+        .panier-vide {
+            text-align: center;
+            font-size: 1.2rem;
+            color: var(--light-text);
+        }
+
+        .panier-article {
+            display: grid;
+            grid-template-columns: 100px 1fr 150px 50px;
+            gap: 20px;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .panier-article img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .panier-article h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+
+        .panier-article .prix {
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .quantite-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .quantite-container button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--border-color);
+            background-color: var(--white);
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .quantite-container input {
+            width: 50px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .supprimer-btn {
+            color: #f44336;
+            cursor: pointer;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        .panier-total {
+            text-align: right;
+            padding: 20px 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+        }
+
+        .panier-total h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+        }
+
+        #confirmation {
+            display: none;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .confirmation-content {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .confirmation-content i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .confirmation-details {
+            text-align: left;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            border-radius: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .panier-article {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .quantite-container {
+                justify-content: center;
+                margin: 10px 0;
+            }
+
+            .panier-total {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Header -->
     <header class="header">
         <div class="container">
-            <div class="logo"><h1><i class="fas fa-paw"></i> O'poil.com</h1></div>
-            <nav class="nav"><ul><li><a href="#accueil">Accueil</a></li><li><a href="#boutique">Boutique</a></li></ul></nav>
-            <div class="header-icons"><a href="#panier"><i class="fas fa-shopping-cart"></i> <span id="cart-count">0</span></a></div>
+            <div class="logo">
+                <h1><i class="fas fa-paw"></i> O'poil.com</h1>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#accueil">Accueil</a></li>
+                    <li><a href="#boutique">Boutique</a></li>
+                </ul>
+            </nav>
+            <div class="header-icons">
+                <a href="#panier">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </a>
+            </div>
         </div>
     </header>
 
@@ -51,7 +364,7 @@
     </section>
 
     <!-- Boutique -->
-    <section id="boutique" class="section" style="padding: 60px 0;">
+    <section id="boutique" class="section">
         <div class="container">
             <h2>Nos Produits</h2>
             <div class="produits-grid" id="produits-container"></div>
@@ -59,10 +372,12 @@
     </section>
 
     <!-- Panier -->
-    <section id="panier" class="section" style="padding: 60px 0;">
+    <section id="panier" class="section">
         <div class="container">
             <h2>Votre Panier</h2>
-            <div class="panier-contenu" id="panier-contenu"><p id="panier-vide">Votre panier est vide.</p></div>
+            <div class="panier-contenu" id="panier-contenu">
+                <p id="panier-vide">Votre panier est vide.</p>
+            </div>
             <div class="panier-total">
                 <h2>Total : <span id="panier-total">0,00 €</span></h2>
                 <div id="paypal-button-container"></div>
@@ -72,22 +387,27 @@
 
     <!-- Confirmation -->
     <section id="confirmation" class="section">
-        <div class="container" style="text-align: center;">
-            <i class="fas fa-check-circle" style="font-size: 3rem; color: #4CAF50; margin-bottom: 20px;"></i>
-            <h2>Merci pour votre commande !</h2>
-            <div id="confirmation-details" style="margin: 20px 0;"></div>
-            <a href="#boutique" class="btn" style="margin-top: 20px;">Retour à la boutique</a>
+        <div class="container">
+            <div class="confirmation-content">
+                <i class="fas fa-check-circle"></i>
+                <h2>Merci pour votre commande !</h2>
+                <div id="confirmation-details"></div>
+                <a href="#boutique" class="btn">Retour à la boutique</a>
+            </div>
         </div>
     </section>
 
     <script>
-        // Produits avec photos et prix corrigés
+        // Initialise EmailJS
+        emailjs.init("BQQsWdtvIoWIOVmg6");
+
+        // Produits avec les images fournies
         const produits = [
             {
                 id: "brosse-chat",
                 nom: "Brosse pour Chat",
                 prix: 24.99,
-                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/e94aa2ba-da57-48ea-bdab-9e9da3694777",
+                image: "https://mistralaichatupprodswe.blob.core.windows.net/chat-images/38/61/e5/3861e5c8-2df2-457e-b2fc-d69929784ecd/0406a706-b88b-4a02-8b58-3815073bd0a9/e94aa2ba-da57-48ea-bdab-9e9da369477e",
                 description: "Brosse douce pour éliminer les poils morts de votre chat."
             },
             {
@@ -113,38 +433,72 @@
             }
         ];
 
-        // Panier
+        // Gestion du panier
         let panier = JSON.parse(localStorage.getItem('panier')) || [];
 
-        // Fonctions du panier
+        // Met à jour le compteur du panier
+        function mettreAJourCompteurPanier() {
+            const totalItems = panier.reduce((total, item) => total + item.quantite, 0);
+            document.getElementById('cart-count').textContent = totalItems;
+        }
+
+        // Ajoute un produit au panier
+        function ajouterAuPanier(idProduit) {
+            const produit = produits.find(p => p.id === idProduit);
+            const produitDansPanier = panier.find(item => item.id === idProduit);
+
+            if (produitDansPanier) {
+                produitDansPanier.quantite += 1;
+            } else {
+                panier.push({ ...produit, quantite: 1 });
+            }
+
+            sauvegarderPanier();
+            alert(`${produit.nom} a été ajouté au panier !`);
+        }
+
+        // Change la quantité d'un produit
+        function changerQuantite(idProduit, delta) {
+            const produit = panier.find(item => item.id === idProduit);
+            if (produit) {
+                produit.quantite = Math.max(1, produit.quantite + delta);
+                sauvegarderPanier();
+            }
+        }
+
+        // Supprime un produit du panier
+        function supprimerDuPanier(idProduit) {
+            panier = panier.filter(item => item.id !== idProduit);
+            sauvegarderPanier();
+        }
+
+        // Calcule le total du panier
+        function calculerTotalPanier() {
+            return panier.reduce((total, item) => total + (item.prix * item.quantite), 0).toFixed(2);
+        }
+
+        // Sauvegarde le panier
         function sauvegarderPanier() {
             localStorage.setItem('panier', JSON.stringify(panier));
-            document.getElementById('cart-count').textContent = panier.reduce((total, item) => total + item.quantite, 0);
+            mettreAJourCompteurPanier();
             afficherPanier();
         }
 
-        function ajouterAuPanier(idProduit) {
-            const produit = produits.find(p => p.id === idProduit);
-            const existe = panier.find(item => item.id === idProduit);
-            if (existe) existe.quantite += 1;
-            else panier.push({...produit, quantite: 1});
-            sauvegarderPanier();
-            alert(`${produit.nom} ajouté au panier !`);
-        }
-
+        // Affiche les produits
         function afficherProduits() {
             const container = document.getElementById('produits-container');
             container.innerHTML = produits.map(produit => `
                 <div class="produit-card">
-                    <img src="${produit.image}" alt="${produit.nom}">
+                    <img src="${produit.image}" alt="${produit.nom}" loading="lazy">
                     <h3>${produit.nom}</h3>
-                    <p>${produit.prix.toFixed(2)} €</p>
-                    <p><small>${produit.description}</small></p>
+                    <p class="prix">${produit.prix.toFixed(2)} €</p>
+                    <p class="description">${produit.description}</p>
                     <button class="btn" onclick="ajouterAuPanier('${produit.id}')">Ajouter au panier</button>
                 </div>
             `).join('');
         }
 
+        // Affiche le panier
         function afficherPanier() {
             const container = document.getElementById('panier-contenu');
             const totalElement = document.getElementById('panier-total');
@@ -162,69 +516,26 @@
             videElement.style.display = 'none';
             container.innerHTML = panier.map(item => `
                 <div class="panier-article">
-                    <img src="${item.image}" alt="${item.nom}" style="width: 80px; height: 80px; object-fit: cover;">
-                    <h3>${item.nom}</h3>
-                    <p>${item.prix.toFixed(2)} €</p>
+                    <img src="${item.image}" alt="${item.nom}">
                     <div>
+                        <h3>${item.nom}</h3>
+                        <p class="prix">${item.prix.toFixed(2)} €</p>
+                    </div>
+                    <div class="quantite-container">
                         <button onclick="changerQuantite('${item.id}', -1)">-</button>
-                        <span>${item.quantite}</span>
+                        <input type="number" value="${item.quantite}" min="1" onchange="document.getElementById('quantite-${item.id}').value = this.value; changerQuantite('${item.id}', 0)" id="quantite-${item.id}">
                         <button onclick="changerQuantite('${item.id}', 1)">+</button>
                     </div>
-                    <button onclick="supprimerDuPanier('${item.id}')">❌</button>
+                    <div class="supprimer-btn" onclick="supprimerDuPanier('\${item.id}')">❌</div>
                 </div>
             `).join('');
 
-            const total = panier.reduce((sum, item) => sum + (item.prix * item.quantite), 0).toFixed(2);
+            const total = calculerTotalPanier();
             totalElement.textContent = `${total} €`;
 
             if (total > 0) {
                 paypal.Buttons({
-                    createOrder: (data, actions) => actions.order.create({
-                        purchase_units: [{ amount: { value: total }, description: "Commande O'poil.com" }]
-                    }),
-                    onApprove: (data, actions) => actions.order.capture().then(details => {
-                        // Envoi email via EmailJS
-                        emailjs.send("service_yojc9b9", "template_btlq6g2", {
-                            client_name: details.payer.name.given_name,
-                            client_email: details.payer.email_address,
-                            produits: panier.map(p => `${p.nom} (x${p.quantite})`).join(', '),
-                            total: total + " €",
-                            order_id: details.id
-                        }).then(() => {
-                            document.getElementById('panier').style.display = 'none';
-                            document.getElementById('confirmation').style.display = 'block';
-                            document.getElementById('confirmation-details').innerHTML = `
-                                <p>Commande #${details.id} validée !</p>
-                                <p>Total: ${total} €</p>
-                                <p>Merci pour votre achat.</p>
-                            `;
-                            panier = [];
-                            sauvegarderPanier();
-                        });
-                    })
-                }).render(paypalContainer);
-            }
-        }
-
-        function changerQuantite(idProduit, delta) {
-            const item = panier.find(i => i.id === idProduit);
-            if (item) {
-                item.quantite = Math.max(1, item.quantite + delta);
-                sauvegarderPanier();
-            }
-        }
-
-        function supprimerDuPanier(idProduit) {
-            panier = panier.filter(item => item.id !== idProduit);
-            sauvegarderPanier();
-        }
-
-        // Initialisation
-        document.addEventListener('DOMContentLoaded', () => {
-            afficherProduits();
-            afficherPanier();
-            emailjs.init("BQQsWdtvIoWIOVmg6");
-        });
-    </script>
-</body>
-</html>
+                    createOrder: (data, actions) => {
+                        return actions.order.create({
+                            purchase_units:
+                        
